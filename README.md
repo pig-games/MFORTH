@@ -1,7 +1,7 @@
 # MFORTH #
 
 This project is a fork of MFORTH by Michael Alyn Miller (actually a fork of the fork by [AbortRetryFail](https://github.com/AbortRetryFail/MFORTH)).
-It includes a new build system and toolchain migration (asm85) by Erik van der Tier.
+It includes a new build system and toolchain migration (asm485) by Erik van der Tier.
 
 [ANS Forth](http://en.wikipedia.org/wiki/ANS_Forth) environment for the
 [TRS-80 Model 100](http://en.wikipedia.org/wiki/Model_100) laptop

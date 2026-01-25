@@ -1,5 +1,8 @@
 # MFORTH #
 
+This project is a fork of MFORTH by Michael Alyn Miller (actually a fork of the fork by [AbortRetryFail](https://github.com/AbortRetryFail/MFORTH)).
+It includes a new build system and toolchain migration (asm85) by Erik van der Tier.
+
 [ANS Forth](http://en.wikipedia.org/wiki/ANS_Forth) environment for the
 [TRS-80 Model 100](http://en.wikipedia.org/wiki/Model_100) laptop
 computer.  ROM images and additional information are available at the
@@ -9,9 +12,12 @@ strangeGizmo.com.
 ## Compilation ##
 
 The majority of MFORTH is written in 8085 assembly language and targets
-the [Telemark Cross Assembler (TASM)](http://home.comcast.net/~tasm/).
-`build.bat` can be used to call TASM with the appropriate arguments,
-although you may need to tweak the batch file for your computer.
+[asm485](https://github.com/pig-games/asm485).
+
+This fork of MFORTH supports a native build using **[asm485](https://github.com/pig-games/asm485)** and a `Makefile`.
+The MFORTH sources in `src/` have been translated to asm485 syntax. The 
+build mirrors the original two-pass process (first pass builds without PHASH, 
+PhashGen emits `phash.asm`, second pass builds with PHASH).
 
 MFORTH uses a perfect hash table to accelerate its access to the
 ROM-based dictionary.  The first build pass creates the standard ROM,
@@ -21,10 +27,36 @@ the hash tables, and writes those hash tables out as an assembler file.
 The second build pass compiles the hash tables into the ROM and enables
 the hash-based dictionary search.
 
-PhashGen is a C# application, but should work fine with Mono.  MFORTH
-operates both with and without the hash table if you do not have the
-ability to run the PhashGen tool.  Only a single build pass is needed if
-you are not using PhashGen.
+Prerequisites:
+
+- \`[asm485](https://github.com/pig-games/asm485)\` built locally (default: `tools/asm85`). Override with `ASM85=/path/to/asm85`.
+- Rust toolchain (`cargo`) for the Rust PhashGen implementation
+- Python 3
+
+Build:
+
+```bash
+make clean
+make
+```
+
+Output ROM binary is written to `bin/MFORTH.BX` (32 KiB).
+
+Options (Rust PhashGen is the default):
+
+```bash
+make PROFILER=1
+make MFORTH_CHANGE=1234
+make PHASHGEN_IMPL=rust
+```
+
+`MFORTH_CHANGE` is passed through as a preprocessor define; no manual
+regeneration is needed.
+
+Notes:
+
+If the symbol-extraction step fails (depends on asm85 listing formatting),
+edit `tools/asm485_lst_to_sym.py` to match your local asm85 `.lst` format.
 
 ## Installation ##
 
@@ -151,6 +183,7 @@ There is no way to stop the clock display other than to exit MFORTH.
 ## Copyright and License ##
 
 Copyright &copy; 2009-2012, Michael Alyn Miller <malyn@strangeGizmo.com>
+Copyright (c) 2026, Erik van der Tier
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

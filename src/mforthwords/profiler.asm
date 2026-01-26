@@ -40,13 +40,13 @@
 ;   PRN  LATEST @  BEGIN  DUP NFATOPECSZ + @  ?DUP IF U. DUP .NAME CR THEN
 ;   NFA>LFA @  DUP 0= UNTIL DROP  [HEX] 0C EMIT  LCD ;
 
-            LINKTO(LINK_PROFILER,0,13,'E',"LIFORP-TNIRP")
-PRINTPROFILE:JMP    ENTER
-            DW   PRN,LATEST,FETCH
-_printprof1:DW   DUP,LIT,NFATOPECSZ,PLUS,FETCH,QDUP,zbranch,_printprof2
-            DW   UDOT,DUP,DOTNAME,CR
-_printprof2:DW   NFATOLFA,FETCH,DUP,ZEROEQUALS,zbranch,_printprof1
-            DW   DROP,LIT,0CH,EMIT,LCD,EXIT
+            .linkTo link_profiler,0,13,'E',"LIFORP-TNIRP"
+printprofile JMP    enter
+            .word   prn,latest,fetch
+_printprof1 .word   dup,lit,nfatopecsz,plus,fetch,qdup,zbranch,_printprof2
+            .word   udot,dup,dotname,cr
+_printprof2 .word   nfatolfa,fetch,dup,zeroequals,zbranch,_printprof1
+            .word   drop,lit,0CH,emit,lcd,exit
 
 
 ; ----------------------------------------------------------------------
@@ -59,16 +59,16 @@ _printprof2:DW   NFATOLFA,FETCH,DUP,ZEROEQUALS,zbranch,_printprof1
 ;   CLEAR-PROFILER  1 PROFILING !  TIMED-EXECUTE  0 PROFILING !
 ;   TICKS>MS CR ." Total time:" UD. ." ms";
 
-            LINKTO(PRINTPROFILE,0,7,'E',"LIFORP")
-PROFILE:    JMP     ENTER
-            DW   CLEARPROFILE,ONE,LIT,PROFILING,STORE
-            DW   TIMEDEXECUTE
-            DW   ZERO,LIT,PROFILING,STORE
-            DW   TICKSTOMS,CR,PSQUOTE,12
-            DB   "Total time: "
-            DW   TYPE,UDDOT,PSQUOTE,2
-            DB   "ms"
-            DW   TYPE,EXIT
+            .linkTo printprofile,0,7,'E',"LIFORP"
+profile JMP     enter
+            .word   clearprofile,one,lit,profiling,store
+            .word   timedexecute
+            .word   zero,lit,profiling,store
+            .word   tickstoms,cr,psquote,12
+            .byte   "Total time: "
+            .word   type,uddot,psquote,2
+            .byte   "ms"
+            .word   type,exit
 
 
 
@@ -85,10 +85,10 @@ PROFILE:    JMP     ENTER
 ; : CLEAR-PROFILE ( -- )
 ;   LATEST @  BEGIN  0 OVER NFATOPECSZ + !  NFA>LFA @  DUP 0= UNTIL DROP ;
 
-            LINKTO(PROFILE,0,13,'E',"LIFORP-RAELC")
-LAST_PROFILER:
-CLEARPROFILE:JMP    ENTER
-            DW   LATEST,FETCH
-_clearprof1:DW   ZERO,OVER,LIT,NFATOPECSZ,PLUS,STORE
-            DW   NFATOLFA,FETCH,DUP,ZEROEQUALS,zbranch,_clearprof1
-            DW   DROP,EXIT
+            .linkTo profile,0,13,'E',"LIFORP-RAELC"
+last_profiler
+clearprofile JMP    enter
+            .word   latest,fetch
+_clearprof1 .word   zero,over,lit,nfatopecsz,plus,store
+            .word   nfatolfa,fetch,dup,zeroequals,zbranch,_clearprof1
+            .word   drop,exit

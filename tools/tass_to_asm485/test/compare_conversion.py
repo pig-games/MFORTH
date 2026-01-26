@@ -18,7 +18,7 @@ def main() -> int:
     script_dir = Path(__file__).resolve().parent
     repo_root = script_dir.parents[2]
     src_dir = script_dir / "MFORTH_TASS"
-    expected_dir = script_dir / "MFORTH_ASM85"
+    expected_dir = script_dir / "MFORTH_ASM485"
     converter = repo_root / "tools" / "tass_to_asm485" / "convert_mforth_to_asm485.py"
 
     if not src_dir.is_dir():
@@ -72,7 +72,7 @@ def main() -> int:
                         break
                 return 1
 
-    print("OK: converted output matches expected asm85 sources")
+    print("OK: converted output matches expected asm485 sources")
     return 0
 
 

@@ -10,11 +10,11 @@ import re
 
 
 PREPROC_RE = re.compile(
-    r"^(\s*)#?(IFDEF|IFNDEF|IF|ELSEIF|ELSE|ENDIF|DEFINE|UNDEF|INCLUDE|ECHO)\b",
+    r"^(\s*)([#.])(IFDEF|IFNDEF|IF|ELSEIF|ELSE|ENDIF|DEFINE|UNDEF|INCLUDE|ECHO)\b",
     re.IGNORECASE,
 )
 LABEL_RE = re.compile(
-    r"^\s*#?(IFDEF|IFNDEF|IF|ELSEIF|ELSE|ENDIF)\s*:",
+    r"^\s*[#.](IFDEF|IFNDEF|IF|ELSEIF|ELSE|ENDIF)\s*:",
     re.IGNORECASE,
 )
 CONDITIONALS = {"IF", "ELSEIF", "ELSE", "ENDIF"}
@@ -37,7 +37,6 @@ def split_comment(line: str) -> tuple[str, str]:
 
 def normalize_preproc(text: str) -> str:
     out = []
-    stack: list[str] = []
     for line in text.splitlines(keepends=True):
         if line.lstrip().startswith(";"):
             out.append(line)
@@ -66,32 +65,9 @@ def normalize_preproc(text: str) -> str:
             out.append(line)
             continue
 
-        keyword = m.group(2).upper()
+        keyword = m.group(3).lower()
         rest = code[m.end():]
-        has_hash = code.lstrip().startswith("#")
-
-        if keyword in DIRECTIVES:
-            new_code = f"#{keyword}{rest}"
-        elif keyword in PREPROC_START or (keyword == "IF" and has_hash):
-            stack.append("preproc")
-            new_code = f"#{keyword}{rest}"
-        elif keyword == "IF":
-            stack.append("cond")
-            new_code = f" {keyword}{rest}"
-        elif keyword in {"ELSE", "ELSEIF", "ENDIF"}:
-            if stack:
-                mode = stack[-1]
-            else:
-                mode = "preproc" if has_hash else "cond"
-            if mode == "preproc":
-                new_code = f"#{keyword}{rest}"
-            else:
-                new_code = f" {keyword}{rest}"
-            if keyword == "ENDIF" and stack:
-                stack.pop()
-        else:
-            new_code = code
-
+        new_code = f".{keyword}{rest}"
         out.append(new_code + comment + line_ending)
     return "".join(out)
 

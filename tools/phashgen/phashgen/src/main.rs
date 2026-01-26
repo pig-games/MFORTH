@@ -89,7 +89,7 @@ fn run(args: Args) -> Result<()> {
 }
 
 fn write_header(out: &mut dyn Write, _rom: &Rom) -> Result<()> {
-    writeln!(out, "PHASHMASK   EQU    0{:02X}H", HASH_MASK >> 8)?;
+    writeln!(out, "PHASHMASK =    0{:02X}H", HASH_MASK >> 8)?;
     Ok(())
 }
 
@@ -106,7 +106,7 @@ fn tab_org() -> u16 {
 }
 
 fn write_aux_table(out: &mut dyn Write, label: &str, org: u16, bytes: &[u8]) -> Result<()> {
-    writeln!(out, "            ORG    0{:04X}H", org)?;
+    writeln!(out, "            .ORG    0{:04X}H", org)?;
     writeln!(out, "{}:", label)?;
     write_byte_data(out, bytes)?;
     Ok(())
@@ -118,7 +118,7 @@ fn write_byte_data(out: &mut dyn Write, bytes: &[u8]) -> Result<()> {
             if i != 0 {
                 writeln!(out)?;
             }
-            write!(out, "            DB   ")?;
+            write!(out, "            .BYTE   ")?;
         } else {
             write!(out, ",")?;
         }
@@ -133,13 +133,13 @@ fn write_hash_table(
     table: &CuckooHashTable<Word, impl Fn(&Word) -> u16, impl Fn(&Word) -> u16>,
     symbols: &std::collections::HashMap<u16, String>,
 ) -> Result<()> {
-    writeln!(out, "            ORG    0{:04X}H", tab_org())?;
+    writeln!(out, "            .ORG    0{:04X}H", tab_org())?;
     writeln!(out, "PHASHTAB:")?;
 
     for i in 0..HASH_TABLE_SIZE {
         let key = i as u16;
         let Some(word) = table.try_get(key) else {
-            writeln!(out, "            DW   0")?;
+            writeln!(out, "            .WORD   0")?;
             continue;
         };
 
@@ -150,7 +150,7 @@ fn write_hash_table(
             .or_else(|| symbols.get(&key2))
             .ok_or_else(|| anyhow!("missing symbol for word '{}'", word.name))?;
 
-        writeln!(out, "            DW   {}-NFATOCFASZ", label)?;
+        writeln!(out, "            .WORD   {}-NFATOCFASZ", label)?;
     }
 
     Ok(())

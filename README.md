@@ -14,7 +14,7 @@ strangeGizmo.com.
 The majority of MFORTH is written in 8085 assembly language and targets
 [asm485](https://github.com/pig-games/asm485).
 
-This fork of MFORTH supports a native build using **[asm485](https://github.com/pig-games/asm485)** and a `Makefile`.
+This fork of MFORTH supports a native build using **[opForge](https://github.com/pig-games/opForge)** and a `Makefile`.
 The MFORTH sources in `src/` have been translated to asm485 syntax. The 
 build mirrors the original two-pass process (first pass builds without PHASH, 
 PhashGen emits `phash.asm`, second pass builds with PHASH).

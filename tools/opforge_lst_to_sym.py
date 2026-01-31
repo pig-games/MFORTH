@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Extract a symbol table from an asm85 .lst file into MFORTH's .SYM format:
+Extract a symbol table from an opForge .lst file into MFORTH's .SYM format:
   SYMBOLNAME <hexaddress>
 (one per line, address is hex without 0x, case-insensitive ok)
 
-asm85's README: listing includes a symbol table. citeturn1view0
+opForge's README: listing includes a symbol table. citeturn1view0
 We parse common patterns seen in assembler listings.
 """
 from __future__ import annotations
@@ -45,7 +45,7 @@ def main():
             break
 
     if not syms:
-        raise SystemExit("ERROR: Could not find any symbols in listing; update parse patterns in tools_mac/asm85_lst_to_sym.py")
+        raise SystemExit("ERROR: Could not find any symbols in listing; update parse patterns in tools_mac/opForge_lst_to_sym.py")
 
     out_lines=[]
     for addr in sorted(syms.keys()):

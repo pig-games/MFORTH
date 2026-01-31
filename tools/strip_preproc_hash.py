@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy a source tree and strip leading '#' from asm485 preprocessor directives."""
+"""Copy a source tree and strip leading '#' from opForge preprocessor directives."""
 
 from __future__ import annotations
 

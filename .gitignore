@@ -10,9 +10,9 @@ phash.asm
 
 /build
 /tools/phashgen_rust/target
-/tools/tass_to_asm85/test
+/tools/tass_to_opForge/test
 *.pyc
 tools/PhashGen.exe
-tools/asm85
+tools/opForge
 /tools/phashgen/target
-/docs
+.vscode/settings.json

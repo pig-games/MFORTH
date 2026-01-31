@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Convert TASM-style MFORTH sources into asm485 syntax."""
+"""Convert TASM-style MFORTH sources into opForge syntax."""
 
 import argparse
 import re
 import sys
 from pathlib import Path
 
-INDENT = "            "  # 12 spaces to match asm485 formatting in this repo
+INDENT = "            "  # 12 spaces to match opForge formatting in this repo
 
 OPCODES = {
     # 8080/8085 core
@@ -565,11 +565,11 @@ def convert_line(line: str, macro_names: set[str]) -> list[str]:
     if comment.endswith("\n"):
         comment = comment[:-1]
 
-    # Drop .ADDINSTR lines (asm485 doesn't support custom mnemonics)
+    # Drop .ADDINSTR lines (opforge doesn't support custom mnemonics)
     if ADDINSTR_RE.match(code.strip()):
         return ["; " + line.lstrip()]
 
-    # Normalize ECHO into comments (asm485 has no .echo)
+    # Normalize ECHO into comments (opforge has no .echo)
     if re.match(r"^\s*[#.]?ECHO\b", code, re.IGNORECASE):
         code = re.sub(r"^\s*[#.]?ECHO", "; ECHO", code, count=1, flags=re.IGNORECASE)
         return [code + comment + line_ending]
@@ -599,7 +599,7 @@ def convert_line(line: str, macro_names: set[str]) -> list[str]:
             org_line += comment_full
         return [org_line + line_ending, f"{label.lower()}{line_ending}"]
 
-    # Convert label: EQU/SET to asm485 assignments
+    # Convert label: EQU/SET to opforge assignments
     m = LABEL_EQU_RE.match(code)
     if m:
         indent, label, directive, rest = m.groups()
@@ -740,7 +740,7 @@ def convert_file(src: Path, dst: Path | None, macro_names: set[str]) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Convert TASM-style MFORTH .asm files to asm485 syntax.")
+    parser = argparse.ArgumentParser(description="Convert TASM-style MFORTH .asm files to opforge syntax.")
     parser.add_argument("src", type=Path, help="Source file or directory")
     parser.add_argument("dst", nargs="?", type=Path, help="Destination file or directory")
     parser.add_argument("--in-place", action="store_true", help="Convert files in place (directory only)")
